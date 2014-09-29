@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Numeric Sequence Calculator</title>
+	<meta name="author" content="Nissa Blagojevic">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<script src="./js/sequence-calculator.js"></script>
+</head>
+<body>
+<div id="instructions">
+	Instructions:
+	<ol>
+	<li>Enter a whole number above 0 into the "Starting Number:" text box below</li>
+	<li>Click the "Calculate" button</li>
+	<li>The results or an error will be displayed beneath the input area in order of acceptance criteria</li>
+	</ol>
+<!-- Instructions to go here -->
+</div>
+<div id="error">
+</div>
+<form action="numbersequence_submit" method="get" accept-charset="utf-8">
+	<label for="ns_startValue">Starting Number:</label>
+	<input type="text" name="ns_startValue" value="" id="ns_startValue" autofocus="on" inputmode="numeric" required>
+	<input type="submit" value="Calculate &rarr;" id="ns_calculate">
+</form>
+<div id="result">
+</div>
+<div id="unit-tests">
+</div>
+</body>
+</html>

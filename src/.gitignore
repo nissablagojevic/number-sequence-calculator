@@ -1,0 +1,3 @@
+number-sequence/bower_components/*
+number-sequence/.sass-cache/*
+*.DS_Store

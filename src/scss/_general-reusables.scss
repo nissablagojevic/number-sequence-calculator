@@ -1,0 +1,89 @@
+//REQUIRES COMPASS TO USE, DON'T FORGET TO INCLUDE IT IN YOUR MAIN SCSS
+
+
+//MIXINS
+@mixin abs-vert($image, $width, $side: right, $offset: 0) {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: $width;
+	@extend %image-replacement;
+	
+	@if $side == left {
+		left: $offset;
+	}
+	@else {
+		right: $offset;
+	}
+	
+	background: $image no-repeat $side center;
+	@include background-size(contain);
+}
+
+// Mixins for rem support
+@function strip-unit($num) {
+  @return $num / ($num * 0 + 1);
+}
+
+@mixin rem-fallback($property, $values...) {
+  $max: length($values);
+  $pxValues: '';
+  $remValues: '';
+
+  @for $i from 1 through $max {
+    $value: strip-unit(nth($values, $i));
+    $pxValues: #{$pxValues + $value*strip-unit($rem-base)}px;
+
+    @if $i < $max {
+      $pxValues: #{$pxValues + " "};
+    }
+  }
+
+  @for $i from 1 through $max {
+    $value: strip-unit(nth($values, $i));
+    $remValues: #{$remValues + $value}rem;
+
+    @if $i < $max {
+      $remValues: #{$remValues + " "};
+    }
+  }
+
+  #{$property}: $pxValues;
+  #{$property}: $remValues;
+}
+
+
+//EXTENDS
+// http://www.zeldman.com/2012/03/01/replacing-the-9999px-hack-new-image-replacement/
+%image-replacement {
+	text-indent: 200%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+%row {
+  @include grid-row();
+  margin: 0 auto;
+}
+
+%clearfix {
+	@include clearfix();
+}
+
+%horizontal-list {
+	@include horizontal-list(0);
+}
+
+%invisible {
+	position: absolute;
+	visibility: hidden;
+	width: 0 !important;
+	height: 0 !important;
+	overflow: hidden !important;
+}
+
+%inline-block {
+	@include inline-block;
+}
+
+

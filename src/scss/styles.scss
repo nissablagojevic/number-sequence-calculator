@@ -1,0 +1,94 @@
+$alert-close-opacity: 0.7;
+$alert-close-opacity-hover: 0.9;
+$alert-close-color: #fff;
+
+@import "settings";
+
+@import "app","normalize","compass", "general-reusables";
+
+%fullcolumn {
+	@include grid-column($columns: 12);
+}
+
+%fullcolumncollapse {
+	@include grid-column($columns: 12, $collapse: true);
+}
+
+body {
+	@extend %row;
+	background-color: $secondary-color;
+}
+
+#sequence-area {
+	@extend %fullcolumncollapse;
+	background-color: $white;
+	@include rem-fallback('padding-bottom', 1);
+	@include rem-fallback('margin-top', 2);
+	@include single-transition();
+	@include box-shadow();
+}
+
+h1 {
+	@extend %fullcolumn;
+}
+
+#instructions {
+	@extend %fullcolumn;
+}
+
+form {
+	@extend %fullcolumn;
+}
+
+fieldset {
+	@extend %fullcolumn;
+	margin: 0;
+}
+
+label {
+	@extend %fullcolumncollapse;
+	@media #{$medium-up} {
+		@include grid-column($columns: 9, $collapse: true);
+	}
+}
+
+input[type='submit'] {
+	@extend %fullcolumn;
+	@extend .button;
+	@extend .postfix;
+	@media #{$medium-up} {
+		@include grid-column($columns: 3, $collapse: true);
+		@include rem-fallback('margin-top', 1.3125);
+	}
+}
+
+input[type="text"] {
+	@extend %fullcolumn;
+}
+
+#result-area {
+	@extend %fullcolumn;
+	@include rem-fallback('padding-top', 1);
+}
+
+.result {
+	@extend %fullcolumn;
+	background-color: lighten($primary-color, 50%);
+	@include rem-fallback('margin', 0.5, 0);
+	@include rem-fallback('padding', 1);
+}
+
+#error {
+	@extend .alert-box;
+	@include alert();
+	@include rem-fallback('margin-top', 1);
+	.close {
+		@include rem-fallback('margin-top', -1);
+		@include rem-fallback('padding', 1, 0.5);
+		@include rem-fallback('font-size', 1.5);
+	}
+}
+
+#unit-tests {
+	@extend %fullcolumn;
+}

@@ -12,21 +12,27 @@
 				e.preventDefault();
 				
 				var $startValue,
-					result;
-				
-				$("#result").html("");
-				$startValue = $("form > #ns_startValue").val();
+					results;
+
+				$("#result-area").html("");
+				$startValue = $("form #ns_startValue").val();
 				//if number value of startValue is same as parseInt and greater than 0
 				if(+$startValue == parseInt($startValue, 10) && +$startValue > 0) {
 					results = seqC.calculate.init(+$startValue);
 					
 					for(var i = 0; i < results.length; i++) {
-						$("#result").append(results[i] + "<br/>");
+						if(results[i] === '') {
+							results[i] = ['No results.'];
+						}						
+						$("#result-area").append('<div class="slabel">Sequence ' + (i+1) + ': </div><div class="result">' + results[i].join(', ')  + "</div>");
 					}
 				}
 				else {
 					results = "Please input a whole number above 0.";
-					$("#result").append(results);
+					var alertBox = '<div data-alert id="error" abindex="0" aria-live="assertive" role="dialogalert">' 
+									+ results 
+									+ '<button href="#" tabindex="0" class="close" aria-label="Close Alert">&times;</button></div>';
+					$("#result-area").append(alertBox).foundation("alert");
 				}
             });
 		},
@@ -106,8 +112,13 @@
 	unitTest = {
 		init: function() {
 			$("#unit-tests").html("");
-			$("#unit-tests").append("UI test ... " + ((this.testUI()) ? "PASSED" : "FAILED") + "<br/>");
+			$("#unit-tests").append("UI tests ... " + ((this.testUI.init()) ? "PASSED" : "FAILED") + "<br/>");
 			$("#unit-tests").append("Calculate tests ... " + ((this.testCalculate.init()) ? "PASSED" : "FAILED") + "<br/>");
+		},
+		
+		clearForm: function() {
+			$("#result-area").html("");
+			$("input[type='text']").val("");
 		},
 		
 		compareArrays: function(actualResult, expectedResult) {
@@ -122,34 +133,76 @@
 			return false;
 		},
 		
-		testUI: function() {
-			var uiInput,
-				uiExpectedResult,
-				uiActualResult = [];
+		testUI: {
+			init: function() {
+				var calcInput = [-5, 0, 3.2, 4, 5, 'a', ' ', null, '"', 1];		
+				if(this.validResult(calcInput)
+					&& this.returnsAlert(calcInput))  {
+						return true;
+					}
+				return false;
+			},
+			validResult: function(array) {
+				var uiExpectedResult,
+					uiActualResult = [];
 
-			//Test 1: Whether UI accepts only valid values
-			uiInput = [-5, 0, 3.2, 3, 15, 'a', ' ', null, '"', 1];
-			uiExpectedResult = [false, false, false, true, true, false, false, false, false, true];
-			
-			for(var i = 0; i < uiInput.length; i++) {
-				var testResult;
-					
-				$("form > #ns_startValue").val(uiInput[i]);
-				$form.submit();
-				testResult = $("#result").html();
+				//Test 1: Whether UI gives results only for valid values
+				uiExpectedResult = [false, false, false, true, true, false, false, false, false, true];
+
+				for(var i = 0; i < array.length; i++) {			
+					$("form #ns_startValue").val(array[i]);
+					$form.submit();
+
+					//valid result will always have 5 sequences
+					if($(".result").length === 5) {
+						//sequences are never empty text
+						if($(".result").eq(0).text().length !== 0) {
+							uiActualResult.push(true);
+						}
+						else {
+							uiActualResult.push(false);
+						}
+					}
+					else {
+						uiActualResult.push(false);
+					}
+				}
+
+				unitTest.clearForm();
 				
-				//valid result will always start with 1, false means the number 1 hasn't shown up first in the result
-				if(testResult.indexOf('1') == 0) {
-					uiActualResult.push(true);
+				return unitTest.compareArrays(uiActualResult, uiExpectedResult);
+			},
+			returnsAlert: function(array) {
+				var uiExpectedResult,
+					uiActualResult = [];
+					
+				uiExpectedResult = [true, true, true, false, false, true, true, true, true, false];
+					
+				for(var i = 0; i < array.length; i++) {			
+					$("form #ns_startValue").val(array[i]);
+					$form.submit();
+
+					//valid result will always have 5 sequences
+					if($("#error").length !== 0) {
+						//errors are never empty text
+						if($("#error").text().length !== 0) {
+							uiActualResult.push(true);
+						}
+						else {
+							uiActualResult.push(false);
+						}
+					}
+					else {
+						uiActualResult.push(false);
+					}
 				}
-				else {
-					uiActualResult.push(false);
-				}
+				
+				unitTest.clearForm();
+					
+				//Test 2: Similar to test 1, but making sure our error is coming up
+				return unitTest.compareArrays(uiActualResult, uiExpectedResult);
 			}
-			
-			return this.compareArrays(uiActualResult, uiExpectedResult);
 		},
-		
 		testCalculate: {
 			init: function() {
 				var calcInput = [-5, 0, 3.2, 4, 5, 'a', ' ', null, '"', 1];
@@ -212,7 +265,7 @@
 				return multiArrayTest;
 			}
 		}
-	}
+	};
 	
 	win.sequenceCalculator = sequenceCalculator;
 	
